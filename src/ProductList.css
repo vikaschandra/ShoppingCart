@@ -262,7 +262,6 @@ body {
   .cart-list-container {
     position: absolute;
     overflow-x: hidden;
-    top: 100vh;
     /* Initially off-screen */
     left: 0;
     width: 100%;
@@ -279,8 +278,7 @@ body {
   }
   
   .cart-list-container.visible {
-    top: 0;
-    height: 500%; /* to make it overlap the plants page even after scrolling, otherwise the plans will be accessible below the cart page */
+    height: 100%;
   }
 
   .category-title {

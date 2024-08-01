@@ -253,21 +253,22 @@ function ProductList() {
     };
     const showCartItems = () => {
         setShowCart(true);
+        setCurrentScreen('cart');
     };
     const onContinueShopping = () => {
         setShowCart(false);
         // update the disabled products list
         const itemMatching = cartItems.map((item) => item.name);
         setDisabledProducts(itemMatching);
+        setCurrentScreen('product');
 
     };
     const getItemCount = () => {
         const count = cartItems.reduce((total, item) => total + item.quantity, 0);
         return count;
     };
-
-    return (
-        <div>
+    const Navbar = ({ setCurrentScreen }) => {
+        return (
             <div className="navbar" style={styleObj}>
                 <div className="tag">
                     <div className="luxury">
@@ -282,34 +283,56 @@ function ProductList() {
 
                 </div>
                 <div style={styleObjUl}>
-                    <div> <a href="#" style={styleA}>Plants</a></div>
+                    <div> <a href="#" style={styleA} onClick={onContinueShopping}>Plants</a></div>
                     <div> <a href="#" style={styleA}><h1 className='cart'>
                         <CartIcon count={getItemCount()} onClick={showCartItems} />
                     </h1></a></div>
                 </div>
             </div>
-            <div className={`landing-page ${showCart ? 'fade-out' : ''}`}>
-                <div className="product-grid">
-                    {plantsArray.map((category, index) => (
-                        <div key={index}>
-                            <h1><div className='category-title'>{category.category}</div></h1>
-                            <div className="product-list">
-                                {category.plants.map((plant, plantIndex) => (
-                                    <div className="product-card" key={plantIndex}>
-                                        <img className="product-image" src={plant.image} alt={plant.name} />
-                                        <div className="product-title">{plant.name}</div>
-                                        <div className="product-title">${plant.cost}</div>
-                                        <button className="product-button" onClick={() => handleAddToCart(plant)} disabled={disabledProducts.includes(plant.name)}>Add to cart</button>
-                                    </div>
-                                ))}
+        );
+    };
+
+    const Cart = () => <div className={`cart-list-container ${showCart ? 'visible' : ''}`}>
+        <CartItem onContinueShopping={onContinueShopping} />
+    </div>;
+    const Product = () => <div className={`landing-page ${showCart ? 'fade-out' : ''}`}>
+        <div className="product-grid">
+            {plantsArray.map((category, index) => (
+                <div key={index}>
+                    <h1><div className='category-title'>{category.category}</div></h1>
+                    <div className="product-list">
+                        {category.plants.map((plant, plantIndex) => (
+                            <div className="product-card" key={plantIndex}>
+                                <img className="product-image" src={plant.image} alt={plant.name} />
+                                <div className="product-title">{plant.name}</div>
+                                <div className="product-title">${plant.cost}</div>
+                                <button className="product-button" onClick={() => handleAddToCart(plant)} disabled={disabledProducts.includes(plant.name)}>Add to cart</button>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <div className={`cart-list-container ${showCart ? 'visible' : ''}`}>
-                <CartItem onContinueShopping={onContinueShopping} />
-            </div>
+            ))}
+        </div>
+    </div>;
+
+    const [currentScreen, setCurrentScreen] = useState('product');
+    const renderScreen = () => {
+        switch (currentScreen) {
+            case 'product':
+                return <Product />;
+            case 'cart':
+                return <Cart />;
+
+            default:
+                return <Product />;
+        }
+    };
+
+    return (
+        <div>
+            <Navbar setCurrentScreen={setCurrentScreen}></Navbar>
+            {renderScreen()}
+
         </div>
     );
 }
